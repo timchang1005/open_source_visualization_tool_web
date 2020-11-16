@@ -1,85 +1,92 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import { List, Hidden, Drawer, Box } from '@material-ui/core';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
+import { List, Drawer, IconButton, Divider } from '@material-ui/core';
+import { ChevronLeft, Inbox, Mail } from '@material-ui/icons'
 import SidebarItem from './SidebarItem'
+import clsx from 'clsx'
 
 const items = [
   {
     href: '/',
-    icon: InboxIcon,
+    icon: Inbox,
     title: 'Dashboard'
   },
   {
     href: '/',
-    icon: MailIcon,
+    icon: Mail,
     title: 'Customers'
   },
 ]
 
-const useStyles = makeStyles({
-  mobileDrawer: {
-    width: 256
-  },
-  desktopDrawer: {
+const useStyles = makeStyles((theme) => ({
+  drawer: {
     width: 256,
-    top: 64,
-    height: 'calc(100% - 64px)'
+    flexShrink: 0,
+    whiteSpace: 'nowrap',
   },
-});
+  drawerOpen: {
+    width: 256,
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  drawerClose: {
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    overflowX: 'hidden',
+    width: theme.spacing(7) + 1,
+    [theme.breakpoints.up('sm')]: {
+      width: theme.spacing(9) + 1,
+    },
+  },
+  sidebar: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    padding: theme.spacing(0, 1),
+    ...theme.mixins.toolbar,
+  },
+}));
 
-function Sidebar({ onMobileClose, openMobile }) {
+function Sidebar({ onClose, isOpen }) {
   const classes = useStyles();
-  
-  const content = (
-    <Box height="100%" display="flex" flexDirection="column">
-      <Box p={2}>
-        <List>
-          {items.map((item) => (
-            <SidebarItem href={item.href} key={item.title} title={item.title} icon={item.icon}/>
-          ))}
-        </List>
-      </Box>
-    </Box>
-  )
 
   return (
-    <div>
-      <Hidden lgUp>
-        <Drawer
-          anchor="left"
-          classes={{ paper: classes.mobileDrawer }}
-          onClose={onMobileClose}
-          open={openMobile}
-          variant="temporary"
-        >
-          {content}
-        </Drawer>
-      </Hidden>
-      <Hidden mdDown>
-        <Drawer
-          anchor="left"
-          classes={{ paper: classes.desktopDrawer }}
-          open
-          variant="persistent"
-        >
-          {content}
-        </Drawer>
-      </Hidden>
-    </div>
+    <Drawer
+      variant="permanent"
+      className={clsx(classes.drawer, {
+        [classes.drawerOpen]: isOpen,
+        [classes.drawerClose]: !isOpen,
+      })}
+      classes={{
+        paper: clsx({
+          [classes.drawerOpen]: isOpen,
+          [classes.drawerClose]: !isOpen,
+        }),
+      }}
+    >
+      <div className={classes.sidebar}>
+        <IconButton onClick={onClose}>
+          <ChevronLeft />
+        </IconButton>
+      </div>
+      <Divider />
+      <List >
+        {items.map((item) => (
+          <SidebarItem href={item.href} key={item.title} title={item.title} icon={item.icon}/>
+        ))}
+      </List>
+    </Drawer>
   )
 }
 
 Sidebar.propTypes = {
-  onMobileClose: PropTypes.func,
-  openMobile: PropTypes.bool
-};
-
-Sidebar.defaultProps = {
-  onMobileClose: () => {},
-  openMobile: false
+  onClose: PropTypes.func,
+  isOpen: PropTypes.bool
 };
 
 export default Sidebar;
