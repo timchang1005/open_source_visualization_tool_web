@@ -1,16 +1,36 @@
 import React, { useEffect } from "react";
 import { Redirect, useLocation } from "react-router-dom";
 import GithubIcon from "mdi-react/GithubIcon";
-import { loginToGithub } from "../redux/actions";
+import { loginToGithub } from "../../redux/actions";
 import { connect } from "react-redux";
 import axios from "axios";
+import { Button, Card, makeStyles } from "@material-ui/core";
 
-function useQuery() {
-  return new URLSearchParams(useLocation().search)
-}
+const useStyle = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+    justifyContent: 'center'
+  },
+  card: {
+    minWidth: 500,
+    margin: 100,
+    display: 'flex',
+    justifyContent: 'center',
+    padding: 50
+  },
+  loginButton: {
+    fontSize: 20,
+    color: 'white',
+    background: 'black',
+    "&:hover": {
+      background: 'gray'
+    }
+  }
+}))
 
 function Login({ login, client_id, redirect_uri, client_secret, proxy_url, isLoggedIn }) {
-  const query = useQuery()
+  const query = new URLSearchParams(useLocation().search)
+  const classes = useStyle()
 
   useEffect(() => {
     let code = query.get("code")
@@ -38,13 +58,17 @@ function Login({ login, client_id, redirect_uri, client_secret, proxy_url, isLog
   }
 
   return (
-    <div>
-      <a
-        href={`https://github.com/login/oauth/authorize?scope=user&client_id=${client_id}&redirect_uri=${redirect_uri}`}
-      >
-        <GithubIcon />
-        <span>Login with GitHub</span>
-      </a>
+    <div className={classes.root}>
+      <Card className={classes.card}>
+        <Button 
+          variant="outlined"
+          className={classes.loginButton}
+          href={`https://github.com/login/oauth/authorize?scope=user&client_id=${client_id}&redirect_uri=${redirect_uri}`}
+        >
+          <GithubIcon/>
+          login to github
+        </Button>
+      </Card>
     </div>
     
   );

@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles'
-import { AppBar, Toolbar, Typography, IconButton } from '@material-ui/core';
+import { AppBar, Toolbar, IconButton } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu'
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
@@ -21,12 +21,6 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.enteringScreen,
     }),
   },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    flexGrow: 1,
-  },
   hide: {
     display: 'none',
   }
@@ -45,7 +39,7 @@ function Header({ toggleSidebar, isSidebarButtonVisible }) {
         <Toolbar>
           <IconButton
             edge="start"
-            className={clsx(classes.menuButton, {
+            className={clsx({
               [classes.hide]: !isSidebarButtonVisible
             })}
             color="inherit"
@@ -54,9 +48,6 @@ function Header({ toggleSidebar, isSidebarButtonVisible }) {
           >
             <MenuIcon/>
           </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            Title
-          </Typography>
         </Toolbar>
       </AppBar>
   )

@@ -1,23 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import { List, Drawer, IconButton, Divider } from '@material-ui/core';
-import { ChevronLeft, Inbox, Mail } from '@material-ui/icons'
+import { List, ListItem, ListItemIcon, ListItemText, Drawer, IconButton, Divider } from '@material-ui/core';
+import { ChevronLeft, ExitToApp } from '@material-ui/icons'
 import SidebarItem from './SidebarItem'
 import clsx from 'clsx'
-
-const items = [
-  {
-    href: '/',
-    icon: Inbox,
-    title: 'Dashboard'
-  },
-  {
-    href: '/',
-    icon: Mail,
-    title: 'Customers'
-  },
-]
+import { logoutFromGithub } from '../../../redux/actions';
+import { connect } from 'react-redux'
+import routes from '../../../routes/Routes';
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -52,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Sidebar({ onClose, isOpen }) {
+function Sidebar({ onClose, isOpen, isLoggedIn, logout }) {
   const classes = useStyles();
 
   return (
@@ -76,9 +66,17 @@ function Sidebar({ onClose, isOpen }) {
       </div>
       <Divider />
       <List >
-        {items.map((item) => (
-          <SidebarItem href={item.href} key={item.title} title={item.title} icon={item.icon}/>
+        {routes
+          .filter((item) => item.sidebarIcon)
+          .map((item) => (
+          <SidebarItem href={item.path} key={item.title} title={item.title} icon={item.sidebarIcon}/>
         ))}
+        {isLoggedIn && <ListItem button onClick={logout}>
+          <ListItemIcon>
+            <ExitToApp/>
+          </ListItemIcon>
+          <ListItemText primary="Logout"/>
+        </ListItem>}
       </List>
     </Drawer>
   )
@@ -89,4 +87,12 @@ Sidebar.propTypes = {
   isOpen: PropTypes.bool
 };
 
-export default Sidebar;
+const mapStateToProps = state => ({
+  isLoggedIn: state.githubAccountInfo.isLoggedIn
+})
+
+const mapDispatchToProps = dispatch => ({
+  logout: () => dispatch(logoutFromGithub())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Sidebar);

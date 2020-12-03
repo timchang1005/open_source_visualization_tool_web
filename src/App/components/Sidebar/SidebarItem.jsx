@@ -1,20 +1,20 @@
-import React from 'react';
+import React, { forwardRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import {
   ListItem,
   ListItemIcon,
   ListItemText,
 } from '@material-ui/core';
+import { Link } from 'react-router-dom'
 
-const SidebarItem = ({
-  className,
-  href,
-  icon: Icon,
-  title,
-}) => {
-
+function SidebarItem({ href, icon: Icon, title }) {
+  const ListItemLink = useMemo(() =>
+    forwardRef((linkProps, ref) => (
+      <Link ref={ref} to={href} {...linkProps}/>
+    )), [href]
+  )
   return (
-    <ListItem button to={href}>
+    <ListItem button component={ListItemLink}>
       <ListItemIcon>
         <Icon/>
       </ListItemIcon>
@@ -24,7 +24,6 @@ const SidebarItem = ({
 }
 
 SidebarItem.propTypes = {
-  className: PropTypes.string,
   href: PropTypes.string,
   icon: PropTypes.elementType,
   title: PropTypes.string

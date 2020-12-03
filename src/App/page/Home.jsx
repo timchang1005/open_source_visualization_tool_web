@@ -1,17 +1,11 @@
 import React from "react"
-import { Redirect } from "react-router-dom"
-import { logoutFromGithub } from "../redux/actions";
+import { logoutFromGithub } from "../../redux/actions";
 import { connect } from "react-redux";
 import { Button } from '@material-ui/core';
 
-function Home({ isLoggedIn, logout, userInfo }) {
-
-  if (!isLoggedIn) {
-    return <Redirect to="/login" />
-  }
-
+function Home({ logout, userInfo }) {
   return (
-    <div className="container">
+    <div>
       <p>home</p>
       <Button onClick={logout}>Logout</Button>
       <p>`avatar_url {userInfo.avatar_url}`</p>
