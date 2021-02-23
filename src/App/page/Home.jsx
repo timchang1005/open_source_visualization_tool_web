@@ -6,10 +6,11 @@ import { Button } from '@material-ui/core';
 function Home({ logout, userInfo }) {
   return (
     <div>
-      <p>home</p>
-      <Button onClick={logout}>Logout</Button>
-      <p>`avatar_url {userInfo.avatar_url}`</p>
-      <p>`name {userInfo.login}`</p>
+      <h1>home</h1>
+      <h2>Welcome, {userInfo.login}</h2>
+      <img src={userInfo.avatar_url} alt="avatar"/>
+      <br/>
+      <Button variant="outlined" onClick={logout}>Logout</Button>
     </div>
   );
 }

@@ -71,12 +71,12 @@ function Sidebar({ onClose, isOpen, isLoggedIn, logout }) {
           .map((item) => (
           isLoggedIn && <SidebarItem href={item.path} key={item.title} title={item.title} icon={item.sidebarIcon}/>
         ))}
-        {isLoggedIn && <ListItem button onClick={logout}>
+        {(isLoggedIn && <ListItem button onClick={logout}>
           <ListItemIcon>
             <ExitToApp/>
           </ListItemIcon>
           <ListItemText primary="Logout"/>
-        </ListItem> ||
+        </ListItem>) ||
         <SidebarItem href="/login" title="Login" icon={AccountCircle}/>}
       </List>
     </Drawer>

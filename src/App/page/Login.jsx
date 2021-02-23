@@ -34,7 +34,7 @@ function Login({ login, client_id, redirect_uri, client_secret, proxy_url, isLog
   const classes = useStyle()
   const [isLogging, setIsLogging] = useState(false)
 
-  useEffect(() => {
+  const loginToGithub = () => {
     let code = query.get("code")
     if(code) {
       setIsLogging(true)
@@ -54,7 +54,11 @@ function Login({ login, client_id, redirect_uri, client_secret, proxy_url, isLog
           alert("Sorry! Login failed")
         })
     }
-  }, []);
+  }
+
+  useEffect(() => {
+    loginToGithub()
+  });
 
   if (isLoggedIn) {
     return <Redirect to="/" />;
