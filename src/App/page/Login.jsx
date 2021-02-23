@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Redirect, useLocation } from "react-router-dom";
 import GithubIcon from "mdi-react/GithubIcon";
 import { loginToGithub } from "../../redux/actions";
 import { connect } from "react-redux";
 import axios from "axios";
 import { Button, Card, makeStyles } from "@material-ui/core";
+import LoadingView from '../components/LoadingView';
 
 const useStyle = makeStyles((theme) => ({
   root: {
@@ -31,10 +32,12 @@ const useStyle = makeStyles((theme) => ({
 function Login({ login, client_id, redirect_uri, client_secret, proxy_url, isLoggedIn }) {
   const query = new URLSearchParams(useLocation().search)
   const classes = useStyle()
+  const [isLogging, setIsLogging] = useState(false)
 
   useEffect(() => {
     let code = query.get("code")
     if(code) {
+      setIsLogging(true)
       const requestData = {
         client_id: client_id,
         redirect_uri: redirect_uri,
@@ -59,6 +62,7 @@ function Login({ login, client_id, redirect_uri, client_secret, proxy_url, isLog
 
   return (
     <div className={classes.root}>
+      <LoadingView visible={isLogging}/>
       <Card className={classes.card}>
         <Button 
           variant="outlined"

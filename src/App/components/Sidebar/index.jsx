@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import { List, ListItem, ListItemIcon, ListItemText, Drawer, IconButton, Divider } from '@material-ui/core';
-import { ChevronLeft, ExitToApp } from '@material-ui/icons'
+import { ChevronLeft, ExitToApp, AccountCircle } from '@material-ui/icons'
 import SidebarItem from './SidebarItem'
 import clsx from 'clsx'
 import { logoutFromGithub } from '../../../redux/actions';
@@ -69,14 +69,15 @@ function Sidebar({ onClose, isOpen, isLoggedIn, logout }) {
         {routes
           .filter((item) => item.sidebarIcon)
           .map((item) => (
-          <SidebarItem href={item.path} key={item.title} title={item.title} icon={item.sidebarIcon}/>
+          isLoggedIn && <SidebarItem href={item.path} key={item.title} title={item.title} icon={item.sidebarIcon}/>
         ))}
         {isLoggedIn && <ListItem button onClick={logout}>
           <ListItemIcon>
             <ExitToApp/>
           </ListItemIcon>
           <ListItemText primary="Logout"/>
-        </ListItem>}
+        </ListItem> ||
+        <SidebarItem href="/login" title="Login" icon={AccountCircle}/>}
       </List>
     </Drawer>
   )
