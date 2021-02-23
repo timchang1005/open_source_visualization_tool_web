@@ -58,7 +58,7 @@ function Login({ login, client_id, redirect_uri, client_secret, proxy_url, isLog
 
   useEffect(() => {
     loginToGithub()
-  });
+  }, []);
 
   if (isLoggedIn) {
     return <Redirect to="/" />;
