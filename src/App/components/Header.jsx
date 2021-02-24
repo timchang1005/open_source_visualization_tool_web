@@ -2,7 +2,6 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles'
 import { AppBar, Toolbar, IconButton } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu'
-import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
@@ -51,11 +50,6 @@ function Header({ toggleSidebar, isSidebarButtonVisible }) {
         </Toolbar>
       </AppBar>
   )
-}
-
-Header.propTypes = {
-  toggleSidebar: PropTypes.func,
-  isSidebarButtonVisible: PropTypes.bool
 }
 
 Header.defaultProps = {

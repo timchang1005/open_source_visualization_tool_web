@@ -1,5 +1,5 @@
 import React from "react"
-import { logoutFromGithub } from "../../redux/actions";
+import { logout } from "../../redux/actions";
 import { connect } from "react-redux";
 import { Button } from '@material-ui/core';
 
@@ -17,14 +17,13 @@ function Home({ logout, userInfo }) {
 
 function mapStateToProps(state) {
   return {
-    isLoggedIn: state.githubAccountInfo.isLoggedIn,
-    userInfo: state.githubAccountInfo.user,
+    userInfo: state.userInfo.user,
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    logout: () => dispatch(logoutFromGithub())
+    logout: () => dispatch(logout())
   }
 }
 

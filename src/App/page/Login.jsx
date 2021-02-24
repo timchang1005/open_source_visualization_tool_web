@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Redirect, useLocation } from "react-router-dom";
 import GithubIcon from "mdi-react/GithubIcon";
-import { loginToGithub } from "../../redux/actions";
+import { storeUserInfo } from "../../redux/actions";
 import { connect } from "react-redux";
 import axios from "axios";
 import { Button, Card, makeStyles } from "@material-ui/core";
 import LoadingView from '../components/LoadingView';
+import { CLIENT_ID, REDIRECT_URI, CLIENT_SECRET, OAUTH_URL, API_URL } from '../../config'
 
 const useStyle = makeStyles((theme) => ({
   root: {
@@ -29,7 +30,7 @@ const useStyle = makeStyles((theme) => ({
   }
 }))
 
-function Login({ login, client_id, redirect_uri, client_secret, proxy_url, isLoggedIn }) {
+function Login({ isLoggedIn, storeUserInfo }) {
   const query = new URLSearchParams(useLocation().search)
   const classes = useStyle()
   const [isLogging, setIsLogging] = useState(false)
@@ -39,15 +40,26 @@ function Login({ login, client_id, redirect_uri, client_secret, proxy_url, isLog
     if(code) {
       setIsLogging(true)
       const requestData = {
-        client_id: client_id,
-        redirect_uri: redirect_uri,
-        client_secret: client_secret,
+        client_id: CLIENT_ID,
+        redirect_uri: REDIRECT_URI,
+        client_secret: CLIENT_SECRET,
         code: code
       };
 
-      axios.post(proxy_url, requestData)
-        .then(({ data }) => {
-          login(data, true)
+      axios.post(OAUTH_URL, requestData)
+        .then(({ data: accessToken }) => {
+          let requestData = {
+            userId: null,
+            accessToken
+          }
+          axios.post(`${API_URL}/v1/user`, requestData)
+            .then(({ data: user }) => {
+              storeUserInfo(user, accessToken)
+            })
+            .catch(err => {
+              console.log(err)
+              alert("Fetching user info failed")
+            })
         })
         .catch(err => {
           console.error(err)
@@ -58,6 +70,7 @@ function Login({ login, client_id, redirect_uri, client_secret, proxy_url, isLog
 
   useEffect(() => {
     loginToGithub()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (isLoggedIn) {
@@ -71,7 +84,7 @@ function Login({ login, client_id, redirect_uri, client_secret, proxy_url, isLog
         <Button 
           variant="outlined"
           className={classes.loginButton}
-          href={`https://github.com/login/oauth/authorize?scope=user&client_id=${client_id}&redirect_uri=${redirect_uri}`}
+          href={`https://github.com/login/oauth/authorize?scope=user&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}`}
         >
           <GithubIcon/>
           login to github
@@ -84,17 +97,13 @@ function Login({ login, client_id, redirect_uri, client_secret, proxy_url, isLog
 
 function mapStateToProps(state) {
   return {
-    isLoggedIn: state.githubAccountInfo.isLoggedIn,
-    client_id: state.githubAccountInfo.client_id,
-    redirect_uri: state.githubAccountInfo.redirect_uri,
-    client_secret: state.githubAccountInfo.client_secret,
-    proxy_url: state.githubAccountInfo.proxy_url
+    isLoggedIn: state.userInfo.isLoggedIn,
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    login: (user, isLoggedIn) => dispatch(loginToGithub(user, isLoggedIn))
+    storeUserInfo: (user, accessToken) => dispatch(storeUserInfo(user, accessToken)),
   }
 }
 

@@ -1,1 +1,1 @@
-export * from './GithubAccountAction';
+export * from './UserInfoAction';

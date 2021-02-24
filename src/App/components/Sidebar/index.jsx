@@ -1,11 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import { List, ListItem, ListItemIcon, ListItemText, Drawer, IconButton, Divider } from '@material-ui/core';
 import { ChevronLeft, ExitToApp, AccountCircle } from '@material-ui/icons'
 import SidebarItem from './SidebarItem'
 import clsx from 'clsx'
-import { logoutFromGithub } from '../../../redux/actions';
+import { logout } from '../../../redux/actions';
 import { connect } from 'react-redux'
 import routes from '../../../routes/Routes';
 
@@ -45,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
 function Sidebar({ onClose, isOpen, isLoggedIn, logout }) {
   const classes = useStyles();
 
+
   return (
     <Drawer
       variant="permanent"
@@ -83,17 +83,16 @@ function Sidebar({ onClose, isOpen, isLoggedIn, logout }) {
   )
 }
 
-Sidebar.propTypes = {
-  onClose: PropTypes.func,
-  isOpen: PropTypes.bool
-};
+function mapStateToProps(state) {
+  return {
+    isLoggedIn: state.userInfo.isLoggedIn
+  }
+}
 
-const mapStateToProps = state => ({
-  isLoggedIn: state.githubAccountInfo.isLoggedIn
-})
-
-const mapDispatchToProps = dispatch => ({
-  logout: () => dispatch(logoutFromGithub())
-})
+function mapDispatchToProps(dispatch) {
+  return {
+    logout: () => dispatch(logout())
+  }
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Sidebar);

@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
-import githubAccountInfoReducer from './GithubAccountInfo'
+import userInfoReducer from './userInfoReducer'
 
 const rootReducer = combineReducers({
-  githubAccountInfo: githubAccountInfoReducer
+  userInfo: userInfoReducer
 })
 
 export default rootReducer;

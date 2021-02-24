@@ -1,5 +1,4 @@
 import React, { forwardRef, useMemo } from 'react';
-import PropTypes from 'prop-types';
 import {
   ListItem,
   ListItemIcon,
@@ -21,12 +20,6 @@ function SidebarItem({ href, icon: Icon, title }) {
       <ListItemText primary={title}/>
     </ListItem>
   )
-}
-
-SidebarItem.propTypes = {
-  href: PropTypes.string,
-  icon: PropTypes.elementType,
-  title: PropTypes.string
 }
 
 export default SidebarItem;

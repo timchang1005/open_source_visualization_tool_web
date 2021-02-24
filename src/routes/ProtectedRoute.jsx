@@ -12,7 +12,7 @@ function ProtectedRoute({ render, isLoggedIn, ...rest }) {
 
 function mapStateToProps(state) {
   return {
-    isLoggedIn: state.githubAccountInfo.isLoggedIn
+    isLoggedIn: state.userInfo.isLoggedIn
   }
 }
 
