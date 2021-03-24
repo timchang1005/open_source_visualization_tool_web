@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { BrowserRouter } from 'react-router-dom';
 import Header from './components/Header'
 import Sidebar from './components/Sidebar'
+import MainView from './components/MainView'
 import AllRoutes from './../routes/AllRoutes'
 import { makeStyles } from '@material-ui/core';
 
@@ -32,7 +33,9 @@ export default function App () {
         <Sidebar onClose={() => setSidebarOpen(false)} isOpen={isSidebarOpen}/>
         <main className={classes.main}>
           <div className={classes.headerSpace}/>
-          <AllRoutes/>
+          <MainView>
+            <AllRoutes/>
+          </MainView>
         </main>
       </BrowserRouter>
     </div>

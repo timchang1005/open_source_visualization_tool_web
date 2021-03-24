@@ -1,8 +1,10 @@
 import { combineReducers } from 'redux';
-import userInfoReducer from './userInfoReducer'
+import UserInfo from './UserInfo'
+import SearchCondition from './SearchCondition'
 
 const rootReducer = combineReducers({
-  userInfo: userInfoReducer
+  userInfo: UserInfo,
+  searchCondition: SearchCondition
 })
 
 export default rootReducer;

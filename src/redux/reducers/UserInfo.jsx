@@ -4,7 +4,7 @@ const initState = {
   accessToken: localStorage.getItem("accessToken") || null
 }
 
-const userInfoReducer = (state = initState, action) => {
+const UserInfo = (state = initState, action) => {
   switch(action.type) {
     case "STORE_USER_INFO": {
       localStorage.setItem("user", JSON.stringify(action.payload.user))
@@ -30,4 +30,4 @@ const userInfoReducer = (state = initState, action) => {
   }
 }
 
-export default userInfoReducer;
+export default UserInfo;

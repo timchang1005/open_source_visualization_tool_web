@@ -2,7 +2,6 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 import routes from './Routes';
 import ProtectedRoute from './ProtectedRoute';
-import MainView from '../App/components/MainView';
 
 export default function AllRoutes() {
   return (
@@ -14,11 +13,9 @@ export default function AllRoutes() {
             key={i}
             path={path}
             exact={exact}
-            render={(routeProps) => (
-              <MainView>
-                <Component/>
-              </MainView>
-            )}
+            render={(routeProps) => 
+              <Component/>
+            }
           />)
       })}
     </div>
