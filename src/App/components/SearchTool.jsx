@@ -24,7 +24,12 @@ function SearchTool({ repositories, addRepository, removeRepository }) {
         variant="outlined"
         value={repository}
         onChange={(e) => setRepository(e.target.value)}
-        onKeyPress={(e) => e.key==="Enter" && addRepository(repository)}
+        onKeyPress={(e) => {
+          if(e.key === "Enter") {
+            addRepository(repository)
+            setRepository("")
+          }
+        }}
       />
       {
         repositories.map(repo => 
