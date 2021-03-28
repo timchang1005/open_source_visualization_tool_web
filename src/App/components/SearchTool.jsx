@@ -22,6 +22,7 @@ function SearchTool({ repositories, addRepository, removeRepository }) {
         className={classes.searchBar}
         label="repository"
         variant="outlined"
+        autoFocus
         value={repository}
         onChange={(e) => setRepository(e.target.value)}
         onKeyPress={(e) => {

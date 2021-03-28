@@ -1,19 +1,11 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { CircularProgress } from '@material-ui/core';
+import { Backdrop, CircularProgress } from '@material-ui/core';
 
 const useStyle = makeStyles((theme) => ({
-  loadingView: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+  backdrop: {
     zIndex: theme.zIndex.tooltip,
-    background: "#ffffff80"
+    color: '#fff',
   }
 }))
 
@@ -22,9 +14,9 @@ function LoadingView({ visible }) {
   const classes = useStyle()
 
   return (
-    visible && <div className={classes.loadingView}>
-      <CircularProgress/>
-    </div>
+    <Backdrop className={classes.backdrop} open={visible}>
+      <CircularProgress color="inherit"/>
+    </Backdrop>
   )
 }
 

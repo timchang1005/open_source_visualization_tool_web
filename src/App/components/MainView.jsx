@@ -1,6 +1,5 @@
 import React from 'react';
 import { makeStyles } from "@material-ui/core";
-import SearchTool from './SearchTool'
 
 const useStyles = makeStyles((theme) => ({
   mainView: {
@@ -13,7 +12,6 @@ export default function MainView({ children }) {
 
   return (
     <div className={classes.mainView}>
-      <SearchTool/>
       {children}
     </div>
   )
