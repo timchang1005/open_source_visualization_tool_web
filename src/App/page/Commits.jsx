@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
-import DrawingBoard from '../components/DrawingBoard';
+import React, { useEffect, useState } from 'react';
+import LineChart from '../components/LineChart';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import SearchTool from '../components/SearchTool'
 
 function Commits({ repositories }) {
+  const [commitChartData, setCommitChartData] = useState({datasets: {}, labels: []})
 
   const getCommitsClassifiedWithMonth = (repo) => {
     const [repoOwner, repoName] = repo.split('/')
@@ -38,7 +39,6 @@ function Commits({ repositories }) {
   }
 
   useEffect(() => {
-    let chartDataset = { labels: [], datas: {}}
     Promise.all(repositories.map(repo => getCommitsClassifiedWithMonth(repo)))
       .then( repoCommits => {
         let months = repoCommits.reduce(( uniqueMonths, repo ) => {
@@ -50,18 +50,19 @@ function Commits({ repositories }) {
           return uniqueMonths
         }, []).sort()
 
-        chartDataset.labels = months
-        chartDataset.datas = Object.fromEntries(repoCommits.map(repo => (
-          [repo.name, months.map(month => month in repo.commits ? repo.commits[month] : 0)]
-        )))
-        console.log(chartDataset)
+        setCommitChartData({
+          labels: months,
+          datasets: Object.fromEntries(repoCommits.map(repo => (
+            [repo.name, months.map(month => month in repo.commits ? repo.commits[month] : 0)]
+          )))
+        })
       })
   }, [repositories])
 
   return (
     <div>
       <SearchTool/>
-      <DrawingBoard/>
+      <LineChart datas={commitChartData}/>
     </div>
   )
 }
