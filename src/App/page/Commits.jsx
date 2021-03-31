@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import LineChart from '../components/LineChart';
+import SearchTool from '../components/SearchTool';
+import LoadingView from '../components/LoadingView';
 import { connect } from 'react-redux';
 import axios from 'axios';
-import SearchTool from '../components/SearchTool'
 
 function Commits({ repositories }) {
   const [commitChartData, setCommitChartData] = useState({datasets: {}, labels: []})
+  const [isLoading, setIsLoading] = useState(false)
 
   const getCommitsClassifiedWithMonth = (repo) => {
     const [repoOwner, repoName] = repo.split('/')
@@ -39,6 +41,7 @@ function Commits({ repositories }) {
   }
 
   useEffect(() => {
+    setIsLoading(true)
     Promise.all(repositories.map(repo => getCommitsClassifiedWithMonth(repo)))
       .then( repoCommits => {
         let months = repoCommits.reduce(( uniqueMonths, repo ) => {
@@ -56,11 +59,14 @@ function Commits({ repositories }) {
             [repo.name, months.map(month => month in repo.commits ? repo.commits[month] : 0)]
           )))
         })
+
+        setIsLoading(false)
       })
   }, [repositories])
 
   return (
     <div>
+      <LoadingView visible={isLoading}/>
       <SearchTool/>
       <LineChart datas={commitChartData}/>
     </div>

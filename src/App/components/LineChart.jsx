@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core';
 import { Line } from 'react-chartjs-2';
+import { connect } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
   lineChart: {
@@ -9,7 +10,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export default function LineChart({ datas }) {
+function LineChart({ datas, repoColor }) {
   const classes = useStyles();
   const [data, setData] = useState({labels: [], datasets: []})
 
@@ -22,10 +23,11 @@ export default function LineChart({ datas }) {
           label: repoName,
           data: commitCounts,
           fill: false,
+          borderColor: repoColor[repoName]
         }
       ))
     })
-  }, [datas])
+  }, [datas, repoColor])
 
   const options = {
     responsive: true,
@@ -47,3 +49,11 @@ export default function LineChart({ datas }) {
     </div>
   )
 }
+
+function mapStateToProps(state) {
+  return {
+    repoColor: state.repoColor
+  }
+}
+
+export default connect(mapStateToProps, null)(LineChart);

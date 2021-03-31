@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function SearchTool({ repositories, addRepository, removeRepository }) {
+function SearchTool({ repositories, repoColor, addRepository, removeRepository }) {
   const classes = useStyles();
   const [repository, setRepository] = useState("");
 
@@ -34,7 +34,12 @@ function SearchTool({ repositories, addRepository, removeRepository }) {
       />
       {
         repositories.map(repo => 
-          <Chip className={classes.repoChip} label={repo} onDelete={() => removeRepository(repo)} key={repo}/>
+          <Chip
+            key={repo}
+            className={classes.repoChip}
+            label={repo}
+            style={{background: 'white', border: `3px solid ${repoColor[repo]}`}}
+            onDelete={() => removeRepository(repo)}/>
         )
       }
     </div>
@@ -44,6 +49,7 @@ function SearchTool({ repositories, addRepository, removeRepository }) {
 function mapStateToProps(state) {
   return {
     repositories: state.searchCondition.repositories,
+    repoColor: state.repoColor
   }
 }
 

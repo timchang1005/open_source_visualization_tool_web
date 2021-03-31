@@ -9,7 +9,6 @@ const useStyle = makeStyles((theme) => ({
   }
 }))
 
-
 function LoadingView({ visible }) {
   const classes = useStyle()
 
