@@ -84,7 +84,7 @@ function Login({ isLoggedIn, storeUserInfo }) {
         <Button 
           variant="outlined"
           className={classes.loginButton}
-          href={`https://github.com/login/oauth/authorize?scope=user&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}`}
+          href={`https://github.com/login/oauth/authorize?scope=user repo&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}`}
         >
           <GithubIcon/>
           login to github
