@@ -40,6 +40,14 @@ function LineChart({ datas, repoColor }) {
           }
         }
       ]
+    },
+    tooltips: {
+      mode: 'index',
+      intersect: false,
+      xPadding: 10,
+      yPadding: 10,
+      titleMarginBottom: 10,
+      bodySpacing: 10,
     }
   }
 
