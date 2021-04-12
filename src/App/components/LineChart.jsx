@@ -10,7 +10,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function LineChart({ datas, repoColor }) {
+function LineChart({ datas, repoColor, fill }) {
   const classes = useStyles();
   const [data, setData] = useState({labels: [], datasets: []})
 
@@ -22,12 +22,12 @@ function LineChart({ datas, repoColor }) {
         {
           label: repoName,
           data: commitCounts,
-          fill: false,
+          fill: fill === true,
           borderColor: repoColor[repoName]
         }
       ))
     })
-  }, [datas, repoColor])
+  }, [datas, repoColor, fill])
 
   const options = {
     responsive: true,

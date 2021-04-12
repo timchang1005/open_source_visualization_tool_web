@@ -46,9 +46,8 @@ function Commits({ repositories, accessToken }) {
   useEffect(() => {
     setIsLoading(true)
     Promise.all(repositories.map(repo => getCommitsClassifiedWithMonth(repo)))
-      .then( repoCommits => {
-        console.log(repoCommits)
-        let months = repoCommits.reduce(( uniqueMonths, repo ) => {
+      .then( repos => {
+        let months = repos.reduce(( uniqueMonths, repo ) => {
           for (const month in repo.commits) {
             if(!uniqueMonths.includes(month)) {
               uniqueMonths.push(month)
@@ -59,7 +58,7 @@ function Commits({ repositories, accessToken }) {
 
         setCommitChartData({
           labels: months,
-          datasets: Object.fromEntries(repoCommits.map(repo => (
+          datasets: Object.fromEntries(repos.map(repo => (
             [repo.name, months.map(month => month in repo.commits ? repo.commits[month] : 0)]
           )))
         })
