@@ -69,6 +69,7 @@ function Commits({ repositories, deactivatedRepos, accessToken }) {
 
   return (
     <div>
+      <h2>Commits</h2>
       <LoadingView visible={isLoading}/>
       <SearchTool/>
       <LineChart datas={commitChartData}/>

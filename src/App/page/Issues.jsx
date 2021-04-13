@@ -84,6 +84,7 @@ function Issues({ repositories, deactivatedRepos, accessToken }) {
 
   return (
     <div>
+      <h2>Issues</h2>
       <LoadingView visible={isLoading}/>
       <SearchTool singleSelect={true}/>
       <LineChart datas={issueChartData} fill={true}/>
