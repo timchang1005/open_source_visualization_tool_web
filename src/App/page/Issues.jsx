@@ -5,8 +5,8 @@ import LoadingView from '../components/LoadingView';
 import { connect } from 'react-redux';
 import axios from 'axios';
 
-function Issues({ repositories, accessToken }) {
-  const [commitChartData, setCommitChartData] = useState({datasets: {}, labels: []})
+function Issues({ repositories, deactivatedRepos, accessToken }) {
+  const [issueChartData, setIssueChartData] = useState({datasets: {}, labels: []})
   const [isLoading, setIsLoading] = useState(false)
 
   const getIssuesClassifiedWithMonth = (repo) => {
@@ -54,35 +54,39 @@ function Issues({ repositories, accessToken }) {
   }
 
   useEffect(() => {
-    if(repositories.length > 0) {
+    const selectedRepostitory = repositories.find(repo => !deactivatedRepos.includes(repo))
+    if(selectedRepostitory !== undefined) {
       setIsLoading(true)
-      getIssuesClassifiedWithMonth(repositories[0])
+      getIssuesClassifiedWithMonth(selectedRepostitory)
         .then( repo => {
           let months = Object.keys(repo.issues).sort()
           let issues = months.map(month => repo.issues[month])
-          setCommitChartData({
+          setIssueChartData({
             labels: months,
             datasets: {
+              closed : issues.map(issue => issue[1]).map((sum => value => sum += value)(0)),
               created: issues.map(issue => issue[0]).map((sum => value => sum += value)(0)), 
-              closed : issues.map(issue => issue[1]).map((sum => value => sum += value)(0))
+            },
+            colors: {
+              closed : "#009f4d",
+              created: "#ff97ba",
             }
           })
           setIsLoading(false)
         })
     } else {
-      setCommitChartData({
+      setIssueChartData({
         labels: [],
         datasets: {}
       })
     }
-  }, [repositories])
+  }, [repositories, deactivatedRepos])
 
   return (
     <div>
-      <p>Issues</p>
       <LoadingView visible={isLoading}/>
-      <SearchTool/>
-      <LineChart datas={commitChartData} fill={true}/>
+      <SearchTool singleSelect={true}/>
+      <LineChart datas={issueChartData} fill={true}/>
     </div>
   )
 }
@@ -90,6 +94,7 @@ function Issues({ repositories, accessToken }) {
 function mapStateToProps(state) {
   return {
     repositories: state.searchCondition.repositories,
+    deactivatedRepos: state.searchCondition.deactivated,
     accessToken: state.userInfo.accessToken,
   }
 }

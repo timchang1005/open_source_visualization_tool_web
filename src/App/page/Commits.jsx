@@ -5,7 +5,7 @@ import LoadingView from '../components/LoadingView';
 import { connect } from 'react-redux';
 import axios from 'axios';
 
-function Commits({ repositories, accessToken }) {
+function Commits({ repositories, deactivatedRepos, accessToken }) {
   const [commitChartData, setCommitChartData] = useState({datasets: {}, labels: []})
   const [isLoading, setIsLoading] = useState(false)
 
@@ -45,7 +45,7 @@ function Commits({ repositories, accessToken }) {
 
   useEffect(() => {
     setIsLoading(true)
-    Promise.all(repositories.map(repo => getCommitsClassifiedWithMonth(repo)))
+    Promise.all(repositories.filter(repo => !deactivatedRepos.includes(repo)).map(repo => getCommitsClassifiedWithMonth(repo)))
       .then( repos => {
         let months = repos.reduce(( uniqueMonths, repo ) => {
           for (const month in repo.commits) {
@@ -65,7 +65,7 @@ function Commits({ repositories, accessToken }) {
 
         setIsLoading(false)
       })
-  }, [repositories])
+  }, [repositories, deactivatedRepos])
 
   return (
     <div>
@@ -79,6 +79,7 @@ function Commits({ repositories, accessToken }) {
 function mapStateToProps(state) {
   return {
     repositories: state.searchCondition.repositories,
+    deactivatedRepos: state.searchCondition.deactivated,
     accessToken: state.userInfo.accessToken,
   }
 }

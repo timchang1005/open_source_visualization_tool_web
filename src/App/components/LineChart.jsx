@@ -23,7 +23,8 @@ function LineChart({ datas, repoColor, fill }) {
           label: repoName,
           data: commitCounts,
           fill: fill === true,
-          borderColor: repoColor[repoName]
+          borderColor: datas.colors === undefined ? repoColor[repoName] : datas.colors[repoName],
+          ...datas.colors && { backgroundColor: datas.colors[repoName]}
         }
       ))
     })
