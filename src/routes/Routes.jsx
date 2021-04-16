@@ -1,15 +1,16 @@
-import { Login, Home, Commits } from './../App/page';
+import { Login, Home, Commits, Issues, Releases } from './../App/page';
 import {
   Home as HomeIcon,
-  Check as CheckIcon,
-  BugReport as BugReportIcon
+  Check as CommitIcon,
+  BugReport as IssueIcon,
+  LocalOffer as ReleaseIcon
 } from '@material-ui/icons'
-import Issues from '../App/page/Issues';
 
 const routes = [
   {path: "/", exact: true, component: Home, loginRequired: true, sidebarIcon: HomeIcon, title: "Homepage"},
-  {path: "/commit", component: Commits, loginRequired: true, sidebarIcon: CheckIcon, title: "Commits"},
-  {path: "/issue", component: Issues, loginRequired: true, sidebarIcon: BugReportIcon, title: "Issues"},
+  {path: "/commit", component: Commits, loginRequired: true, sidebarIcon: CommitIcon, title: "Commits"},
+  {path: "/release", component: Releases, loginRequired: true, sidebarIcon: ReleaseIcon, title: "Releases"},
+  {path: "/issue", component: Issues, loginRequired: true, sidebarIcon: IssueIcon, title: "Issues"},
   {path: "/login", component: Login, loginRequired: false},
 ]
 
