@@ -80,6 +80,7 @@ function Issues({ repositories, deactivatedRepos, accessToken }) {
         datasets: {}
       })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [repositories, deactivatedRepos])
 
   return (

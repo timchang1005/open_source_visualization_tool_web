@@ -22,7 +22,7 @@ const SearchCondition = (state = initState, action) => {
       return {
         ...state,
         repositories: state.repositories.filter(repo => repo !== action.payload.repository),
-        deactivated: state.deactivated.filter(repo => repo != action.payload.repository)
+        deactivated: state.deactivated.filter(repo => repo !== action.payload.repository)
       }
     }
     default:

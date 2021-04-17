@@ -65,6 +65,7 @@ function Commits({ repositories, deactivatedRepos, accessToken }) {
 
         setIsLoading(false)
       })
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [repositories, deactivatedRepos])
 
   return (
