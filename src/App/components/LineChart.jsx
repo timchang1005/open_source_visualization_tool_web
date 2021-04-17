@@ -10,7 +10,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function LineChart({ datas, repoColor, fill }) {
+function LineChart({ datas, repoColor, fill, forContributor }) {
   const classes = useStyles();
   const [data, setData] = useState({labels: [], datasets: []})
 
@@ -18,13 +18,13 @@ function LineChart({ datas, repoColor, fill }) {
     const { labels, datasets } = datas 
     setData({
       labels: labels,
-      datasets: Object.entries(datasets).map(([repoName, commitCounts]) => (
+      datasets: Object.entries(datasets).map(([label, values]) => (
         {
-          label: repoName,
-          data: commitCounts,
+          label: label,
+          data: values,
           fill: fill === true,
-          borderColor: datas.colors === undefined ? repoColor[repoName] : datas.colors[repoName],
-          ...datas.colors && { backgroundColor: datas.colors[repoName]}
+          borderColor: datas.colors === undefined ? repoColor[label] : datas.colors[label],
+          ...datas.colors && { backgroundColor: datas.colors[label] }
         }
       ))
     })
@@ -49,6 +49,28 @@ function LineChart({ datas, repoColor, fill }) {
       yPadding: 10,
       titleMarginBottom: 10,
       bodySpacing: 10,
+      ...(forContributor && {
+        itemSort: (a, b) => b.datasetIndex - a.datasetIndex,
+        callbacks: {
+          label: (tooltipItem, data) => {
+            const label = data.datasets[tooltipItem.datasetIndex].label
+            const value = tooltipItem.datasetIndex === 0 ? 
+            data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] :
+            data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] - data.datasets[tooltipItem.datasetIndex-1].data[tooltipItem.index]
+            return `${label}: ${value}`
+          },
+          footer: (tooltipItem, data) => {
+            return `\nTotal: ${data.datasets[data.datasets.length-1].data[tooltipItem[0].index]}`
+          }
+        }
+      }),
+    },
+    legend: {
+      reverse: forContributor === true
+    },
+    onClick: (event, element) => {
+      console.log(event)
+      console.log(element)
     }
   }
 

@@ -5,7 +5,7 @@ import LoadingView from '../components/LoadingView';
 import { connect } from 'react-redux';
 import axios from 'axios';
 
-function Commits({ repositories, deactivatedRepos, accessToken }) {
+function Contributors({ repositories, deactivatedRepos, accessToken }) {
   const [commitChartData, setCommitChartData] = useState({datasets: {}, labels: []})
   const [isLoading, setIsLoading] = useState(false)
 
@@ -65,6 +65,9 @@ function Commits({ repositories, deactivatedRepos, accessToken }) {
 
         setIsLoading(false)
       })
+      .catch(err => {
+        alert(err)
+      })
       // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [repositories, deactivatedRepos])
 
@@ -86,4 +89,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps, null)(Commits);
+export default connect(mapStateToProps, null)(Contributors);

@@ -15,7 +15,6 @@ function Releases({ repositories, deactivatedRepos, accessToken }) {
       .then(() => (
         axios.get(`http://localhost:5000/api/v1/tags?repoOwner=${repoOwner}&repoName=${repoName}`)
           .then(({ data: tags }) => {
-            console.log(tags)
             let minMonth = "9999-12"
             let maxMonth = "1970-01"
             let result = tags.reduce((accumulator, current) => {
@@ -65,6 +64,9 @@ function Releases({ repositories, deactivatedRepos, accessToken }) {
         })
 
         setIsLoading(false)
+      })
+      .catch(err => {
+        alert(err)
       })
       // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [repositories, deactivatedRepos])

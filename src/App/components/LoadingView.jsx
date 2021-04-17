@@ -17,13 +17,13 @@ const useStyle = makeStyles((theme) => ({
 }))
 
 function LoadingView({ visible }) {
-  const [isOverFiveSeconds, setIsOverFiveSeconds] = useState(false);
+  const [isOverThreeSeconds, setIsOverThreeSeconds] = useState(false);
   const classes = useStyle()
 
   useEffect(() => {
     if (visible) {
-      setIsOverFiveSeconds(false)
-      setTimeout(() => setIsOverFiveSeconds(true), 3000)
+      setIsOverThreeSeconds(false)
+      setTimeout(() => setIsOverThreeSeconds(true), 3000)
     }
   }, [visible])
 
@@ -31,7 +31,7 @@ function LoadingView({ visible }) {
     <Backdrop className={classes.backdrop} open={visible}>
       <div className={classes.content}>
         <CircularProgress color="inherit"/>
-        <p className={!isOverFiveSeconds && classes.message}>It might take some time...</p>
+        <p className={isOverThreeSeconds ? undefined : classes.message}>It might take some time...</p>
       </div>
     </Backdrop>
   )

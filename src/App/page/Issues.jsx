@@ -51,6 +51,9 @@ function Issues({ repositories, deactivatedRepos, accessToken }) {
             }
           })
       ))
+      .catch(err => {
+        alert(err)
+      })
   }
 
   useEffect(() => {
