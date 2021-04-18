@@ -64,25 +64,36 @@ function Commits({ repositories, deactivatedRepos, accessToken }) {
             totalCountOfCommitter.push([committer, Object.values(commits).reduce((a, b) => a + b, 0)])
           })
           totalCountOfCommitter.sort((a, b) => b[1] - a[1])
+          let nullCommitter = totalCountOfCommitter.find(([committer]) => committer === "null")
+          if(nullCommitter) {
+            totalCountOfCommitter = [...totalCountOfCommitter.filter(([committer]) => committer !== "null"), nullCommitter]
+          }
 
-          let datasets = {}
-          totalCountOfCommitter.slice(0, 10).forEach(([committer, _], index, slicedArray) => {
-            datasets[committer] = months.map(month => repo.commits[committer][month]).map((sum => value => sum += value)(0))
-            datasets[committer].forEach((commit, i) => {
-              slicedArray.slice(0, index).forEach(([c, _]) => {
-                datasets[c][i] += commit
+          let temp = {}
+          totalCountOfCommitter.forEach(([committer], index, slicedArray) => {
+            temp[committer] = months.map(month => repo.commits[committer][month]).map((sum => value => sum += value)(0))
+            temp[committer].forEach((commit, i) => {
+              slicedArray.slice(0, index).forEach(([c]) => {
+                temp[c][i] += commit
               })
             })
           })
+
+          let datasets = {}
+          totalCountOfCommitter.slice(0, 10).forEach(([committer]) => {
+            datasets[committer] = temp[committer]
+          })
+          datasets["other"] = temp[totalCountOfCommitter[10][0]]
           
           setCommitChartData({
             labels: months,
             datasets: Object.fromEntries(Object.entries(datasets).reverse()),
-            colors: Object.fromEntries(
-              totalCountOfCommitter.slice(0, 10).map(([committer, _], index) => 
+            colors: Object.fromEntries([
+              ...totalCountOfCommitter.slice(0, 10).map(([committer], index) => 
                 [committer, colorChips[index]]
-              )
-            )
+              ),
+              ["other", "gray"]
+            ])
           })
           setIsLoading(false)
         })
