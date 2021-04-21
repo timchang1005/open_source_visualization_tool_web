@@ -3,7 +3,9 @@ let colorChips =["#84abd6", "#ff97ba", "#fdbd10", "#0066b2", "#ed7902", "#0085ad
 const RepoColor = (state = {}, action) => {
   switch(action.type) {
     case "ADD_REPOSITORY": {
-      return Object.fromEntries(
+      return action.payload.repository in state ? 
+        state :
+        Object.fromEntries(
         [...Object.keys(state), action.payload.repository].map((repoName, repoIndex) => (
           [repoName, colorChips[repoIndex]]
         ))
