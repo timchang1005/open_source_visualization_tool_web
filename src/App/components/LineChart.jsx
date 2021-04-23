@@ -18,7 +18,7 @@ function LineChart({ datas, repoColor, fill, forContributor }) {
     const { labels, datasets } = datas 
     setData({
       labels: labels,
-      datasets: Object.entries(datasets).map(([label, values]) => (
+      datasets: Object.entries(datasets).filter(([label]) => label !== "total").map(([label, values]) => (
         {
           label: label,
           data: values,
@@ -53,14 +53,17 @@ function LineChart({ datas, repoColor, fill, forContributor }) {
         itemSort: (a, b) => b.datasetIndex - a.datasetIndex,
         callbacks: {
           label: (tooltipItem, data) => {
+            const total = datas.datasets.total[tooltipItem.index]
             const label = data.datasets[tooltipItem.datasetIndex].label
             const value = tooltipItem.datasetIndex === 0 ? 
             data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] :
             data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] - data.datasets[tooltipItem.datasetIndex-1].data[tooltipItem.index]
-            return `${label}: ${value}`
+            return `${label}: ${value} (${parseInt((value/total).toFixed(2)*100)}%)`
           },
           footer: (tooltipItem, data) => {
-            return `\nTotal: ${data.datasets[data.datasets.length-1].data[tooltipItem[0].index]}`
+            const total = datas.datasets.total[tooltipItem[0].index]
+            const others = datas.datasets.total[tooltipItem[0].index] - data.datasets[data.datasets.length-1].data[tooltipItem[0].index]
+            return `\nOthers: ${others} (${parseInt((others/total).toFixed(2)*100)}%)\n\nTotal: ${total}`
           }
         }
       }),

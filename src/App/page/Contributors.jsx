@@ -69,30 +69,36 @@ function Commits({ repositories, deactivatedRepos, accessToken }) {
             totalCountOfCommitter = [...totalCountOfCommitter.filter(([committer]) => committer !== "null"), nullCommitter]
           }
 
-          let temp = {}
-          totalCountOfCommitter.forEach(([committer], index, slicedArray) => {
-            temp[committer] = months.map(month => repo.commits[committer][month]).map((sum => value => sum += value)(0))
-            temp[committer].forEach((commit, i) => {
+          let datasets = {}
+          totalCountOfCommitter.slice(0, 5).forEach(([committer], index, slicedArray) => {
+            datasets[committer] = months.map(month => repo.commits[committer][month]).map((sum => value => sum += value)(0))
+            datasets[committer].forEach((commit, i) => {
               slicedArray.slice(0, index).forEach(([c]) => {
-                temp[c][i] += commit
+                datasets[c][i] += commit
               })
             })
           })
 
-          let datasets = {}
-          totalCountOfCommitter.slice(0, 10).forEach(([committer]) => {
-            datasets[committer] = temp[committer]
-          })
-          datasets["other"] = temp[totalCountOfCommitter[10][0]]
+          datasets['total'] = months.map((month) => 
+            totalCountOfCommitter.map(([committer]) => 
+              repo.commits[committer][month]
+            ).reduce((a, b) => a + b, 0)
+          ).map((sum => value => sum += value)(0))
+
+          // let datasets = {}
+          // totalCountOfCommitter.slice(0, 5).forEach(([committer]) => {
+          //   datasets[committer] = temp[committer]
+          // })
+          // datasets["other"] = temp[totalCountOfCommitter[5][0]]
           
           setCommitChartData({
             labels: months,
             datasets: Object.fromEntries(Object.entries(datasets).reverse()),
             colors: Object.fromEntries([
-              ...totalCountOfCommitter.slice(0, 10).map(([committer], index) => 
+              ...totalCountOfCommitter.slice(0, 5).map(([committer], index) => 
                 [committer, colorChips[index]]
               ),
-              ["other", "gray"]
+              // ["other", "gray"]
             ])
           })
           setIsLoading(false)
