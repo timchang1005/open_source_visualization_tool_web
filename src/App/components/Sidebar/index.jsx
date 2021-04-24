@@ -7,6 +7,10 @@ import clsx from 'clsx'
 import { logout } from '../../../redux/actions';
 import { connect } from 'react-redux'
 import routes from '../../../routes/Routes';
+import {
+  BiLogOut as LogOutIcon,
+  BiLogIn as LogInIcon,
+} from 'react-icons/bi';
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -73,11 +77,11 @@ function Sidebar({ onClose, isOpen, isLoggedIn, logout }) {
         ))}
         {(isLoggedIn && <ListItem button onClick={logout}>
           <ListItemIcon>
-            <ExitToApp/>
+            <LogOutIcon size={25}/>
           </ListItemIcon>
           <ListItemText primary="Logout"/>
         </ListItem>) ||
-        <SidebarItem href="/login" title="Login" icon={AccountCircle}/>}
+        <SidebarItem href="/login" title="Login" icon={LogInIcon}/>}
       </List>
     </Drawer>
   )

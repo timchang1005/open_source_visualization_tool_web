@@ -15,7 +15,7 @@ function SidebarItem({ href, icon: Icon, title }) {
   return (
     <ListItem button component={ListItemLink}>
       <ListItemIcon>
-        <Icon/>
+        <Icon size={25}/>
       </ListItemIcon>
       <ListItemText primary={title}/>
     </ListItem>
