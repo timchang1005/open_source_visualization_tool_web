@@ -3,6 +3,10 @@ import { makeStyles } from '@material-ui/core';
 import { Line } from 'react-chartjs-2';
 import { connect } from 'react-redux';
 
+Array.prototype.reverseIf = function (condition) {
+  return condition ? this.reverse() : this
+}
+
 const useStyles = makeStyles(theme => ({
   lineChart: {
     padding: theme.spacing(5),
@@ -10,24 +14,32 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function LineChart({ datas, repoColor, fill, forContributor }) {
+function LineChart({ datas, repoColor, fill, cumulative }) {
   const classes = useStyles();
   const [data, setData] = useState({labels: [], datasets: []})
+  const [totalData, setTotalData] = useState([])
 
   useEffect(() => {
     const { labels, datasets } = datas 
     setData({
       labels: labels,
-      datasets: Object.entries(datasets).filter(([label]) => label !== "total").map(([label, values]) => (
+      datasets: Object.entries(datasets).filter(([label]) => label !== "total").map(([label, values], dataIndex, allData) => (
         {
           label: label,
-          data: values,
+          data: cumulative !== true ?
+            values : 
+            values.map((_, valueIndex) => allData.slice(dataIndex).reduce((accumulator, [_, dataValues]) => accumulator + dataValues[valueIndex], 0)),
           fill: fill === true,
           borderColor: datas.colors === undefined ? repoColor[label] : datas.colors[label],
           ...datas.colors && { backgroundColor: datas.colors[label] }
         }
-      ))
+      )).reverseIf(cumulative)
     })
+    setTotalData(
+      datasets?.total ?? labels.map((_, index) => 
+        Object.entries(datasets).reduce((accumulator, [_, values]) => accumulator + values[index], 0)
+      )
+    )
   }, [datas, repoColor, fill])
 
   const options = {
@@ -49,11 +61,11 @@ function LineChart({ datas, repoColor, fill, forContributor }) {
       yPadding: 10,
       titleMarginBottom: 10,
       bodySpacing: 10,
-      ...(forContributor && {
+      ...(cumulative && {
         itemSort: (a, b) => b.datasetIndex - a.datasetIndex,
         callbacks: {
           label: (tooltipItem, data) => {
-            const total = datas.datasets.total[tooltipItem.index]
+            const total = totalData[tooltipItem.index]
             const label = data.datasets[tooltipItem.datasetIndex].label
             const value = tooltipItem.datasetIndex === 0 ? 
             data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index] :
@@ -61,20 +73,18 @@ function LineChart({ datas, repoColor, fill, forContributor }) {
             return `${label}: ${value} (${parseInt((value/total).toFixed(2)*100)}%)`
           },
           footer: (tooltipItem, data) => {
-            const total = datas.datasets.total[tooltipItem[0].index]
-            const others = datas.datasets.total[tooltipItem[0].index] - data.datasets[data.datasets.length-1].data[tooltipItem[0].index]
-            return `\nOthers: ${others} (${parseInt((others/total).toFixed(2)*100)}%)\n\nTotal: ${total}`
+            const total = totalData[tooltipItem[0].index]
+            const others = total - data.datasets[data.datasets.length-1].data[tooltipItem[0].index]
+            return others ? 
+              `\nOthers: ${others} (${parseInt((others/total).toFixed(2)*100)}%)\n\nTotal: ${total}` :
+              `\nTotal: ${total}`
           }
         }
       }),
     },
     legend: {
-      reverse: forContributor === true
+      reverse: cumulative === true
     },
-    onClick: (event, element) => {
-      console.log(event)
-      console.log(element)
-    }
   }
 
   return (

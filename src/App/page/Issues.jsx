@@ -18,26 +18,17 @@ function Issues({ repositories, deactivatedRepos, accessToken }) {
             let minMonth = "9999-12"
             let maxMonth = "1970-01"
             let result = issues.reduce((accumulator, current) => {
-              let createdMonth = current.createdAt.substr(0, 7)
-              if(createdMonth in accumulator) {
-                accumulator[createdMonth][0] += 1
-              } else {
-                accumulator[createdMonth] = [1, 0]
-                if(createdMonth > maxMonth) maxMonth = createdMonth
-                if(createdMonth < minMonth) minMonth = createdMonth
-              }
-              if (current.closedAt != null) {
-                let closedMonth = current.closedAt.substr(0, 7)
-                if(closedMonth in accumulator) {
-                  accumulator[closedMonth][1] += 1
+              let month = current[current.state == "open" ? "createdAt" : "closedAt"].substr(0, 7)
+                if (month in accumulator) {
+                  accumulator[month][current.state == "open" ? 0 : 1] += 1
                 } else {
-                  accumulator[closedMonth] = [0, 1]
-                  if(closedMonth > maxMonth) maxMonth = closedMonth
-                  if(closedMonth < minMonth) minMonth = closedMonth
+                  accumulator[month] = current.state == "open" ? [1, 0] : [0, 1]
+                  if (month > maxMonth) maxMonth = month
+                  if (month < minMonth) minMonth = month
                 }
-              }
               return accumulator
             }, {})
+
             let tempMonth = new Date(...minMonth.split('-').map(str => parseInt(str)))
             while(tempMonth.toISOString().substr(0, 7) < maxMonth) {
               if(!(tempMonth.toISOString().substr(0, 7) in result)) {
@@ -67,12 +58,12 @@ function Issues({ repositories, deactivatedRepos, accessToken }) {
           setIssueChartData({
             labels: months,
             datasets: {
+              open: issues.map(issue => issue[0]).map((sum => value => sum += value)(0)), 
               closed : issues.map(issue => issue[1]).map((sum => value => sum += value)(0)),
-              created: issues.map(issue => issue[0]).map((sum => value => sum += value)(0)), 
             },
             colors: {
+              open: "#ff97ba",
               closed : "#009f4d",
-              created: "#ff97ba",
             }
           })
           setIsLoading(false)
@@ -91,7 +82,7 @@ function Issues({ repositories, deactivatedRepos, accessToken }) {
       <h2>Issues</h2>
       <LoadingView visible={isLoading}/>
       <SearchTool singleSelect={true}/>
-      <LineChart datas={issueChartData} fill={true}/>
+      <LineChart datas={issueChartData} fill={true} cumulative={true}/>
     </div>
   )
 }

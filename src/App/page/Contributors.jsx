@@ -10,6 +10,7 @@ let colorChips = ["#84abd6", "#ff97ba", "#fdbd10", "#0066b2", "#ed7902", "#0085a
 function Commits({ repositories, deactivatedRepos, accessToken }) {
   const [commitChartData, setCommitChartData] = useState({datasets: {}, labels: []})
   const [isLoading, setIsLoading] = useState(false)
+  const [maxContributor, setMaxContributor] = useState(5)
 
   const getCommitsClassifiedWithMonth = (repo) => {
     const [repoOwner, repoName] = repo.split('/')
@@ -65,18 +66,13 @@ function Commits({ repositories, deactivatedRepos, accessToken }) {
           })
           totalCountOfCommitter.sort((a, b) => b[1] - a[1])
           let nullCommitter = totalCountOfCommitter.find(([committer]) => committer === "null")
-          if(nullCommitter) {
+          if (nullCommitter) {
             totalCountOfCommitter = [...totalCountOfCommitter.filter(([committer]) => committer !== "null"), nullCommitter]
           }
 
           let datasets = {}
-          totalCountOfCommitter.slice(0, 5).forEach(([committer], index, slicedArray) => {
+          totalCountOfCommitter.slice(0, maxContributor).forEach(([committer]) => {
             datasets[committer] = months.map(month => repo.commits[committer][month]).map((sum => value => sum += value)(0))
-            datasets[committer].forEach((commit, i) => {
-              slicedArray.slice(0, index).forEach(([c]) => {
-                datasets[c][i] += commit
-              })
-            })
           })
 
           datasets['total'] = months.map((month) => 
@@ -84,21 +80,14 @@ function Commits({ repositories, deactivatedRepos, accessToken }) {
               repo.commits[committer][month]
             ).reduce((a, b) => a + b, 0)
           ).map((sum => value => sum += value)(0))
-
-          // let datasets = {}
-          // totalCountOfCommitter.slice(0, 5).forEach(([committer]) => {
-          //   datasets[committer] = temp[committer]
-          // })
-          // datasets["other"] = temp[totalCountOfCommitter[5][0]]
           
           setCommitChartData({
             labels: months,
-            datasets: Object.fromEntries(Object.entries(datasets).reverse()),
+            datasets: datasets,
             colors: Object.fromEntries([
-              ...totalCountOfCommitter.slice(0, 5).map(([committer], index) => 
+              ...totalCountOfCommitter.slice(0, maxContributor).map(([committer], index) => 
                 [committer, colorChips[index]]
               ),
-              // ["other", "gray"]
             ])
           })
           setIsLoading(false)
@@ -120,7 +109,7 @@ function Commits({ repositories, deactivatedRepos, accessToken }) {
       <h2>Contributors</h2>
       <LoadingView visible={isLoading}/>
       <SearchTool singleSelect={true}/>
-      <LineChart datas={commitChartData} fill={true} forContributor={true}/>
+      <LineChart datas={commitChartData} fill={true} cumulative={true}/>
     </div>
   )
 }

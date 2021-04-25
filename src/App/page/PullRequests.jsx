@@ -6,10 +6,10 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 
 function PullRequests({ repositories, deactivatedRepos, accessToken }) {
-  const [issueChartData, setIssueChartData] = useState({datasets: {}, labels: []})
+  const [pullRequestChartData, setPullRequestChartData] = useState({datasets: {}, labels: []})
   const [isLoading, setIsLoading] = useState(false)
 
-  const getIssuesClassifiedWithMonth = (repo) => {
+  const getPullRequestsClassifiedWithMonth = (repo) => {
     const [repoOwner, repoName] = repo.split('/')
     return axios.post(`http://localhost:5000/api/v1/pulls`, {repoOwner, repoName, accessToken})
       .then(() => (
@@ -18,27 +18,17 @@ function PullRequests({ repositories, deactivatedRepos, accessToken }) {
             let minMonth = "9999-12"
             let maxMonth = "1970-01"
             let result = pullRequests.reduce((accumulator, current) => {
-              let createdMonth = current.createdAt.substr(0, 7)
-              if(createdMonth in accumulator) {
-                accumulator[createdMonth][0] += 1
-              } else {
-                accumulator[createdMonth] = [1, 0, 0]
-                if(createdMonth > maxMonth) maxMonth = createdMonth
-                if(createdMonth < minMonth) minMonth = createdMonth
-              }
-              if (current.closedAt != null) {
-                let closedMonth = current.closedAt.substr(0, 7)
-                if(closedMonth in accumulator) {
-                  accumulator[closedMonth][1] += 1
-                  if (current.state === "merged") accumulator[closedMonth][2] += 1
+              let month = current[current.state == "open" ? "createdAt" : current.state == "merged" ? "mergedAt" : "closedAt"].substr(0, 7)
+                if (month in accumulator) {
+                  accumulator[month][current.state == "open" ? 0 : current.state == "closed" ? 1 : 2] += 1
                 } else {
-                  accumulator[closedMonth] = current.state == "closed" ? [0, 1, 0] : [0, 1, 1]
-                  if(closedMonth > maxMonth) maxMonth = closedMonth
-                  if(closedMonth < minMonth) minMonth = closedMonth
+                  accumulator[month] = current.state == "open" ? [1, 0, 0] : current.state == "closed" ? [0, 1, 0] : [0, 0, 1]
+                  if (month > maxMonth) maxMonth = month
+                  if (month < minMonth) minMonth = month
                 }
-              }
               return accumulator
             }, {})
+
             let tempMonth = new Date(...minMonth.split('-').map(str => parseInt(str)))
             while(tempMonth.toISOString().substr(0, 7) < maxMonth) {
               if(!(tempMonth.toISOString().substr(0, 7) in result)) {
@@ -61,27 +51,27 @@ function PullRequests({ repositories, deactivatedRepos, accessToken }) {
     const selectedRepostitory = repositories.find(repo => !deactivatedRepos.includes(repo))
     if(selectedRepostitory !== undefined) {
       setIsLoading(true)
-      getIssuesClassifiedWithMonth(selectedRepostitory)
+      getPullRequestsClassifiedWithMonth(selectedRepostitory)
         .then( repo => {
           let months = Object.keys(repo.pullRequests).sort()
           let pullRequests = months.map(month => repo.pullRequests[month])
-          setIssueChartData({
+          setPullRequestChartData({
             labels: months,
             datasets: {
-              merged : pullRequests.map(issue => issue[2]).map((sum => value => sum += value)(0)),
-              closed : pullRequests.map(issue => issue[1]).map((sum => value => sum += value)(0)),
-              created: pullRequests.map(issue => issue[0]).map((sum => value => sum += value)(0)), 
+              created: pullRequests.map(pullRequest => pullRequest[0]).map((sum => value => sum += value)(0)), 
+              closed : pullRequests.map(pullRequest => pullRequest[1]).map((sum => value => sum += value)(0)),
+              merged : pullRequests.map(pullRequest => pullRequest[2]).map((sum => value => sum += value)(0)),
             },
             colors: {
-              merged : "#fdbd10",
-              closed : "#009f4d",
               created: "#ff97ba",
+              closed : "#009f4d",
+              merged : "#fdbd10",
             }
           })
           setIsLoading(false)
         })
     } else {
-      setIssueChartData({
+      setPullRequestChartData({
         labels: [],
         datasets: {}
       })
@@ -94,7 +84,7 @@ function PullRequests({ repositories, deactivatedRepos, accessToken }) {
       <h2>Pull Requests</h2>
       <LoadingView visible={isLoading}/>
       <SearchTool singleSelect={true}/>
-      <LineChart datas={issueChartData} fill={true}/>
+      <LineChart datas={pullRequestChartData} fill={true} cumulative={true}/>
     </div>
   )
 }
