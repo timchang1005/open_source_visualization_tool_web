@@ -32,7 +32,7 @@ function PullRequests({ repositories, deactivatedRepos, accessToken }) {
             let tempMonth = new Date(...minMonth.split('-').map(str => parseInt(str)))
             while(tempMonth.toISOString().substr(0, 7) < maxMonth) {
               if(!(tempMonth.toISOString().substr(0, 7) in result)) {
-                result[tempMonth.toISOString().substr(0, 7)] = [0, 0]
+                result[tempMonth.toISOString().substr(0, 7)] = [0, 0, 0]
               }
               tempMonth.setMonth(tempMonth.getMonth() + 1)
             }

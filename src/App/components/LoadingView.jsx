@@ -23,7 +23,7 @@ function LoadingView({ visible }) {
   useEffect(() => {
     if (visible) {
       setIsOverThreeSeconds(false)
-      setTimeout(() => setIsOverThreeSeconds(true), 3000)
+      setTimeout(() => setIsOverThreeSeconds(true), 4000)
     }
   }, [visible])
 
