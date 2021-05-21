@@ -49,7 +49,8 @@ function LineChart({ datas, repoColor, fill, cumulative }) {
       yAxes: [
         {
           ticks: {
-            beginAtZero: true
+            beginAtZero: true,
+            precision: 0
           }
         }
       ]
