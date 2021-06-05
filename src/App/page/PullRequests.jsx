@@ -53,7 +53,7 @@ function PullRequests({ repositories, deactivatedRepos, accessToken }) {
       setIsLoading(true)
       getPullRequestsClassifiedWithMonth(selectedRepostitory)
         .then( repo => {
-          let months = Object.keys(repo.pullRequests).sort()
+          let months = Object.keys(repo.pullRequests).sort().filter(month => month < "2021-06")
           let pullRequests = months.map(month => repo.pullRequests[month])
           setPullRequestChartData({
             labels: months,

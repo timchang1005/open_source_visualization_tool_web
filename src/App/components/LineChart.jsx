@@ -46,22 +46,34 @@ function LineChart({ datas, repoColor, fill, cumulative }) {
     responsive: true,
     maintainAspectRatio: false,
     scales: {
+      xAxes: [
+        {
+          ticks: {
+            fontSize: 30
+          }
+        }
+      ],
       yAxes: [
         {
           ticks: {
             beginAtZero: true,
-            precision: 0
-          }
+            precision: 0,
+            fontSize: 30
+          },
         }
-      ]
+      ],
     },
     tooltips: {
       mode: 'index',
       intersect: false,
+      position: "nearest",
       xPadding: 10,
       yPadding: 10,
       titleMarginBottom: 10,
       bodySpacing: 10,
+      titleFontSize: 20,
+      bodyFontSize: 20,
+      footerFontSize: 20,
       ...(cumulative && {
         itemSort: (a, b) => b.datasetIndex - a.datasetIndex,
         callbacks: {
@@ -84,7 +96,10 @@ function LineChart({ datas, repoColor, fill, cumulative }) {
       }),
     },
     legend: {
-      reverse: cumulative === true
+      reverse: cumulative === true,
+      labels: {
+        fontSize: 35,
+      },
     },
   }
 

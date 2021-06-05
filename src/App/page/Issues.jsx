@@ -53,7 +53,7 @@ function Issues({ repositories, deactivatedRepos, accessToken }) {
       setIsLoading(true)
       getIssuesClassifiedWithMonth(selectedRepostitory)
         .then( repo => {
-          let months = Object.keys(repo.issues).sort()
+          let months = Object.keys(repo.issues).sort().filter(month => month < "2021-06")
           let issues = months.map(month => repo.issues[month])
           setIssueChartData({
             labels: months,

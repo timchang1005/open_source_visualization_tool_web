@@ -60,7 +60,7 @@ function Commits({ repositories, deactivatedRepos, accessToken }) {
           let totalCountOfCommitter = []
           Object.entries(repo.commits).forEach(([committer, commits], index) => {
             if (index === 0) {
-              months = Object.keys(commits).sort()
+              months = Object.keys(commits).sort().filter(month => month < "2021-06")
             }
             totalCountOfCommitter.push([committer, Object.values(commits).reduce((a, b) => a + b, 0)])
           })

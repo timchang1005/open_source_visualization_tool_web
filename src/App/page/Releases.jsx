@@ -54,7 +54,7 @@ function Releases({ repositories, deactivatedRepos, accessToken }) {
             }
           }
           return uniqueMonths
-        }, []).sort()
+        }, []).sort().filter(month => month < "2021-06")
 
         setTagChartData({
           labels: months,
