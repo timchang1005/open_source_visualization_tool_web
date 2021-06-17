@@ -64,11 +64,13 @@ function LineChart({ datas, repoColor, fill, cumulative }) {
       ],
     },
     tooltips: {
+      backgroundColor: "rgba(0,0,0,0.4)",
       mode: 'index',
       intersect: false,
       position: "nearest",
       xPadding: 10,
       yPadding: 10,
+      caretX: 100,
       titleMarginBottom: 10,
       bodySpacing: 10,
       titleFontSize: 20,
